@@ -1,8 +1,17 @@
 # Live Dashboard
 
-实时设备活动监控面板，公开展示我正在用什么 app、看什么内容。
+实时设备活动监控面板，公开展示 Monika 正在用什么 app。
 
-支持 Windows 和 Android（Magisk）双端上报，前端二次元风格设计。
+Windows 端上报，前端二次元风格设计，戏剧化隐私描述。
+
+## 特色
+
+- **VN 对话框**：猫耳装饰的视觉小说台词框，实时显示 "Monika 现在在干什么"
+- **戏剧化描述**：不直接暴露活动内容，用 "正在B站划水摸鱼喵~" 之类的文案替代
+- **时间线聚合**：同一 app 合并显示累计时长，当前活跃排最前，不逐条罗列
+- **樱花飘落动画**：背景 8 片花瓣 CSS 动画，支持 prefers-reduced-motion
+- **在线观众计数**：服务端实时统计当前访客数
+- **10 秒自动轮询**：前端定时刷新，同时作为观众心跳
 
 ## 架构
 
@@ -10,18 +19,15 @@
 ┌─────────────┐     HTTPS POST      ┌──────────────┐     静态托管      ┌────────────┐
 │ Windows Agent│ ──────────────────→ │   Bun 后端    │ ←─────────────── │  Next.js   │
 │  (Python)    │                     │  + SQLite     │                  │  (静态导出) │
-└─────────────┘                     └──────┬───────┘                  └────────────┘
-                                           ↑
-┌─────────────┐     HTTPS POST             │
-│ Android Agent│ ──────────────────────────┘
-│ (Magisk 模块) │
-└─────────────┘
+└─────────────┘                     └──────────────┘                  └────────────┘
 ```
 
 - **通信方式**：HTTPS POST 轮询（短连接，GFW 友好）
 - **数据存储**：SQLite（bun:sqlite，零依赖）
-- **前端刷新**：10 分钟轮询
+- **前端刷新**：10 秒自动轮询
 - **数据保留**：7 天自动清理
+- **隐私保护**：公开 API 隐藏 window_title，前端用戏剧化描述替代
+- **在线观众**：服务端计数，伴随 /api/current 返回
 
 ## 技术栈
 
@@ -30,7 +36,6 @@
 | 后端 | Bun + TypeScript + SQLite |
 | 前端 | Next.js 15 + React 19 + Tailwind CSS 4（静态导出） |
 | Windows Agent | Python + ctypes Win32 API + psutil |
-| Android Agent | Magisk 模块 + shell 脚本（dumpsys） |
 | 部署 | Docker + Nginx 反代 |
 
 ## 项目结构
@@ -53,30 +58,25 @@ live-dashboard/
 │   │       ├── services/
 │   │       │   ├── nsfw-filter.ts  # NSFW 内容过滤（命中则丢弃）
 │   │       │   ├── app-mapper.ts   # 包名/进程名 → 可读名映射
+│   │       │   ├── visitors.ts     # 在线观众计数
 │   │       │   └── cleanup.ts     # 7天数据清理 + 离线检测
 │   │       └── data/
 │   │           ├── app-names.json      # App 名称字典
 │   │           └── nsfw-blocklist.json # NSFW 黑名单
 │   │
 │   └── frontend/               # Next.js 前端
-│       ├── app/                # 页面
+│       ├── app/                # 页面 + globals.css
 │       └── src/
-│           ├── components/     # UI 组件
+│           ├── components/     # UI 组件（CurrentStatus / DeviceCard / Timeline / Header / DatePicker）
 │           ├── hooks/          # useDashboard 轮询 hook
-│           └── lib/            # API 客户端
+│           └── lib/            # API 客户端 + app-descriptions 戏剧化描述
 │
 ├── agents/
-│   ├── windows/                # Windows Agent
-│   │   ├── agent.py            # 主程序
-│   │   ├── config.json         # 配置（gitignored）
-│   │   ├── build.bat           # PyInstaller 打包
-│   │   └── install-task.bat    # 注册开机自启
-│   │
-│   └── android/                # Magisk 模块
-│       ├── service.sh          # 主循环脚本
-│       ├── config.sh           # 配置（gitignored）
-│       ├── module.prop         # 模块信息
-│       └── META-INF/           # Magisk 安装脚本
+│   └── windows/                # Windows Agent
+│       ├── agent.py            # 主程序
+│       ├── config.json         # 配置（gitignored）
+│       ├── build.bat           # PyInstaller 打包
+│       └── install-task.bat    # 注册开机自启
 │
 ├── deploy/nginx/               # Nginx 配置参考
 ├── Dockerfile                  # 多阶段构建
@@ -154,16 +154,9 @@ cp -r out/ ../backend/public/
 ### Windows
 
 1. 安装 Python 3.8+ 和依赖：`pip install -r agents/windows/requirements.txt`
-2. 复制 `config.json`，填入服务器地址和 token
+2. 复制 `config.json`，填入服务器地址和 token（此文件已 gitignore，切勿提交）
 3. 直接运行：`python agent.py`
 4. 或打包成 exe：运行 `build.bat`，然后用 `install-task.bat` 注册开机自启
-
-### Android（Magisk）
-
-1. 编辑 `agents/android/config.sh`，填入服务器地址和 token
-2. 将整个 `android/` 目录打包成 zip：`cd agents && zip -r live-dashboard-magisk.zip android/`
-3. 在 Magisk 中刷入该 zip
-4. 重启后自动运行，日志在模块目录下的 `agent.log`
 
 ## Docker 部署
 

@@ -1,9 +1,8 @@
 import type { DeviceState } from "@/lib/api";
-import { getAppDescription } from "@/lib/app-descriptions";
 
 const platformIcons: Record<string, string> = {
-  windows: "\u{1F5A5}",  // desktop computer
-  android: "\u{1F4F1}",  // mobile phone
+  windows: "\u{1F5A5}",
+  android: "\u{1F4F1}",
 };
 
 function timeAgo(isoStr: string): string {
@@ -25,33 +24,17 @@ export default function DeviceCard({ device }: { device: DeviceState }) {
   const icon = platformIcons[device.platform] || "\u{1F4BB}";
 
   return (
-    <div className="card-decorated rounded-md p-4">
-      {/* Device header */}
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-lg" aria-hidden="true">{icon}</span>
-        <span className="font-semibold text-sm">{device.device_name}</span>
-        <span className="ml-auto text-xs font-medium" title={isOnline ? "Online" : "Offline"}>
-          {isOnline ? "(=^-ω-^=)" : "(-.-)zzZ"}
+    <div className="card-decorated rounded-md px-3 py-2.5 flex items-center gap-2.5">
+      <span className="text-base" aria-hidden="true">{icon}</span>
+      <div className="flex-1 min-w-0">
+        <span className="text-xs font-semibold truncate block">{device.device_name}</span>
+        <span className="text-[10px] text-[var(--color-text-muted)]">
+          {isOnline ? timeAgo(device.last_seen_at) : "offline"}
         </span>
       </div>
-
-      {/* Current activity in VN bubble */}
-      <div className="vn-bubble">
-        {isOnline ? (
-          <p className="text-sm font-medium text-[var(--color-primary)]">
-            {getAppDescription(device.app_name)}
-          </p>
-        ) : (
-          <p className="text-sm text-[var(--color-text-muted)] italic">
-            不在线喵...
-          </p>
-        )}
-      </div>
-
-      {/* Last seen */}
-      <p className="text-xs text-[var(--color-text-muted)] mt-2 text-right">
-        {timeAgo(device.last_seen_at)}
-      </p>
+      <span className="text-xs flex-shrink-0" title={isOnline ? "Online" : "Offline"}>
+        {isOnline ? "(=^-ω-^=)" : "(-.-)zzZ"}
+      </span>
     </div>
   );
 }

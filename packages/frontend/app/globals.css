@@ -94,7 +94,11 @@ body {
   .petal:nth-child(7) { top: 88%; }
   .petal:nth-child(8) { top: 42%; }
 
-  .card-decorated {
+  .card-decorated,
+  .status-bubble,
+  .status-text,
+  .current-badge,
+  .timeline-active {
     animation: none !important;
   }
 }
@@ -170,6 +174,104 @@ body {
   border-top-color: var(--color-border);
 }
 
+/* === CurrentStatus — VN台词框 with cat ears === */
+.status-bubble {
+  position: relative;
+  background: var(--color-card);
+  border: 3px solid var(--color-primary);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 1px var(--color-sakura-bg),
+    0 4px 20px rgba(232, 160, 191, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.status-bubble:hover {
+  box-shadow:
+    0 0 0 1px var(--color-sakura-bg),
+    0 6px 24px rgba(232, 160, 191, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Cat ears */
+.status-ears {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.ear {
+  display: block;
+  width: 18px;
+  height: 14px;
+  position: relative;
+}
+.ear-left {
+  background: var(--color-primary);
+  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+}
+.ear-left::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 3px;
+  width: 12px;
+  height: 9px;
+  background: var(--color-card);
+  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+}
+.ear-right {
+  background: var(--color-primary);
+  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+}
+.ear-right::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 3px;
+  width: 12px;
+  height: 9px;
+  background: var(--color-card);
+  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+}
+
+/* Triangle pointer at bottom */
+.status-pointer {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid var(--color-primary);
+}
+.status-pointer::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid var(--color-card);
+}
+
+/* Status text gentle pulse */
+.status-text {
+  animation: status-pulse 3s ease-in-out infinite;
+}
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
 /* === Pill button === */
 .pill-btn {
   display: inline-flex;
@@ -218,11 +320,31 @@ body {
   border: 2px solid var(--color-border);
   border-radius: 4px;
   overflow: hidden;
-  transition: border-color 0.2s, transform 0.15s ease;
+  transition: border-color 0.2s, transform 0.15s ease, box-shadow 0.2s;
 }
 .timeline-bar:hover {
   border-color: var(--color-primary);
   transform: translateX(3px);
+}
+
+/* Currently active timeline entry */
+.timeline-active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px rgba(232, 160, 191, 0.3), 0 2px 8px rgba(232, 160, 191, 0.15);
+  animation: active-glow 2s ease-in-out infinite;
+}
+@keyframes active-glow {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(232, 160, 191, 0.3), 0 2px 8px rgba(232, 160, 191, 0.15); }
+  50% { box-shadow: 0 0 0 2px rgba(232, 160, 191, 0.4), 0 2px 12px rgba(232, 160, 191, 0.25); }
+}
+
+/* Current badge pulse */
+.current-badge {
+  animation: badge-pulse 1.5s ease-in-out infinite;
+}
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
 /* === Custom scrollbar for timeline === */

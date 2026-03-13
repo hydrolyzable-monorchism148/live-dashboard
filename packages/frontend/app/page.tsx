@@ -2,12 +2,23 @@
 
 import { useDashboard } from "@/hooks/useDashboard";
 import Header from "@/components/Header";
+import CurrentStatus from "@/components/CurrentStatus";
 import DeviceCard from "@/components/DeviceCard";
 import DatePicker from "@/components/DatePicker";
 import Timeline from "@/components/Timeline";
 
 export default function Home() {
   const { current, timeline, selectedDate, changeDate, loading, error, viewerCount } = useDashboard();
+
+  // Build currentAppByDevice map for Timeline
+  const currentAppByDevice: Record<string, string> = {};
+  if (current?.devices) {
+    for (const d of current.devices) {
+      if (d.is_online === 1 && d.app_name) {
+        currentAppByDevice[d.device_id] = d.app_name;
+      }
+    }
+  }
 
   return (
     <>
@@ -39,45 +50,58 @@ export default function Home() {
       )}
 
       {current && (
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left: device cards (narrow) */}
-          <div className="lg:w-64 flex-shrink-0 space-y-3">
-            <h2 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">
-              Devices
-            </h2>
-            {(!current.devices || current.devices.length === 0) ? (
-              <div className="text-center py-6">
-                <p className="text-lg mb-1">(´・ω・`)</p>
-                <p className="text-sm text-[var(--color-text-muted)] italic">
-                  还没有设备连接呢~
-                </p>
-              </div>
-            ) : (
-              current.devices.map((d) => (
-                <DeviceCard key={d.device_id} device={d} />
-              ))
-            )}
-          </div>
+        <>
+          {/* Current status - prominent VN dialog */}
+          <CurrentStatus devices={current.devices ?? []} />
 
-          {/* Right: timeline (wide) */}
-          <div className="flex-1 min-w-0">
-            {/* Date picker */}
-            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-              <DatePicker selectedDate={selectedDate} onChange={changeDate} />
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Left: device cards (narrow) */}
+            <div className="lg:w-56 flex-shrink-0 space-y-2">
+              <h2 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">
+                Devices
+              </h2>
+              {(!current.devices || current.devices.length === 0) ? (
+                <div className="text-center py-4">
+                  <p className="text-lg mb-1">( -ω-) zzZ</p>
+                  <p className="text-xs text-[var(--color-text-muted)] italic">
+                    还没有设备连接呢~
+                  </p>
+                </div>
+              ) : (
+                current.devices.map((d) => (
+                  <DeviceCard key={d.device_id} device={d} />
+                ))
+              )}
             </div>
 
-            <div className="separator-dashed mb-4" />
-
-            {/* Timeline content */}
-            {loading && timeline ? (
-              <div className="opacity-60">
-                <Timeline segments={timeline.segments} summary={timeline.summary} />
+            {/* Right: timeline (wide) */}
+            <div className="flex-1 min-w-0">
+              {/* Date picker */}
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <DatePicker selectedDate={selectedDate} onChange={changeDate} />
               </div>
-            ) : timeline ? (
-              <Timeline segments={timeline.segments} summary={timeline.summary} />
-            ) : null}
+
+              <div className="separator-dashed mb-4" />
+
+              {/* Timeline content */}
+              {loading && timeline ? (
+                <div className="opacity-60">
+                  <Timeline
+                    segments={timeline.segments}
+                    summary={timeline.summary}
+                    currentAppByDevice={currentAppByDevice}
+                  />
+                </div>
+              ) : timeline ? (
+                <Timeline
+                  segments={timeline.segments}
+                  summary={timeline.summary}
+                  currentAppByDevice={currentAppByDevice}
+                />
+              ) : null}
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Footer */}
