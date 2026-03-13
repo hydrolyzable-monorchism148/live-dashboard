@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo } from "react";
 import { useDashboard } from "@/hooks/useDashboard";
 import Header from "@/components/Header";
 import CurrentStatus from "@/components/CurrentStatus";
@@ -11,14 +12,28 @@ export default function Home() {
   const { current, timeline, selectedDate, changeDate, loading, error, viewerCount } = useDashboard();
 
   // Build currentAppByDevice map for Timeline
-  const currentAppByDevice: Record<string, string> = {};
-  if (current?.devices) {
-    for (const d of current.devices) {
-      if (d.is_online === 1 && d.app_name) {
-        currentAppByDevice[d.device_id] = d.app_name;
+  const currentAppByDevice = useMemo(() => {
+    const map: Record<string, string> = {};
+    if (current?.devices) {
+      for (const d of current.devices) {
+        if (d.is_online === 1 && d.app_name) {
+          map[d.device_id] = d.app_name;
+        }
       }
     }
-  }
+    return map;
+  }, [current?.devices]);
+
+  // Night mode: activate when all devices are offline (Monika sleeping)
+  const allOffline = useMemo(() => {
+    if (!current?.devices || current.devices.length === 0) return false;
+    return current.devices.every((d) => d.is_online !== 1);
+  }, [current?.devices]);
+
+  useEffect(() => {
+    document.body.classList.toggle("night-mode", allOffline);
+    return () => { document.body.classList.remove("night-mode"); };
+  }, [allOffline]);
 
   return (
     <>

@@ -22,6 +22,90 @@ body {
   font-family: var(--font-sans);
   color: var(--color-text);
   background-color: var(--color-cream);
+  transition: background-color 1.2s ease, color 1.2s ease;
+}
+
+/* === Night mode (all devices offline / Monika sleeping) === */
+body.night-mode {
+  --color-cream: #1a1a2e;
+  --color-sakura-bg: #1e1e30;
+  --color-card: #242440;
+  --color-border: #3a3a5c;
+  --color-primary: #9b7bb8;
+  --color-secondary: #5a8a8a;
+  --color-accent: #b8944d;
+  --color-text: #c8c4d4;
+  --color-text-muted: #7a7590;
+}
+
+body.night-mode .card-decorated,
+body.night-mode .vn-bubble,
+body.night-mode .status-bubble,
+body.night-mode .timeline-bar,
+body.night-mode .pill-btn,
+body.night-mode .separator-dashed {
+  transition: background-color 1.2s ease, color 1.2s ease, border-color 1.2s ease, box-shadow 1.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body, body.night-mode,
+  body.night-mode .card-decorated,
+  body.night-mode .vn-bubble,
+  body.night-mode .status-bubble,
+  body.night-mode .timeline-bar,
+  body.night-mode .pill-btn,
+  body.night-mode .separator-dashed {
+    transition: none !important;
+  }
+}
+
+/* Sakura petals dim in night mode */
+body.night-mode .sakura-petal::before {
+  opacity: 0.08;
+  background: var(--color-primary);
+}
+
+/* Card decorative corners softer */
+body.night-mode .card-decorated:hover {
+  box-shadow: 0 4px 12px rgba(155, 123, 184, 0.15);
+}
+
+/* Status bubble night glow */
+body.night-mode .status-bubble {
+  box-shadow:
+    0 0 0 1px var(--color-sakura-bg),
+    0 4px 20px rgba(155, 123, 184, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+body.night-mode .status-bubble:hover {
+  box-shadow:
+    0 0 0 1px var(--color-sakura-bg),
+    0 6px 24px rgba(155, 123, 184, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Cat ear inner fill matches dark card */
+body.night-mode .ear-left::after,
+body.night-mode .ear-right::after {
+  background: var(--color-card);
+}
+
+/* Timeline active glow adjusted */
+body.night-mode .timeline-active {
+  box-shadow: 0 0 0 1px rgba(155, 123, 184, 0.3), 0 2px 8px rgba(155, 123, 184, 0.15);
+}
+
+/* VN bubble pointer colors */
+body.night-mode .vn-bubble::after {
+  border-top-color: var(--color-card);
+}
+body.night-mode .vn-bubble::before {
+  border-top-color: var(--color-border);
+}
+
+/* Status pointer night colors */
+body.night-mode .status-pointer::after {
+  border-top-color: var(--color-card);
 }
 
 /* === Sakura petal system === */
