@@ -133,7 +133,10 @@ registerTier("hide", [
 
 export function getPrivacyTier(appName: string): PrivacyTier {
   if (!appName) return "hide";
-  return tierMap.get(appName.toLowerCase()) ?? "hide";
+  // Default to "show" for unknown apps (e.g. games, galgame executables).
+  // All sensitive categories (chat, email, finance, system, proxy, social)
+  // are explicitly registered as "hide" above.
+  return tierMap.get(appName.toLowerCase()) ?? "show";
 }
 
 // ── Browser suffix patterns (order matters — try longest first) ──
