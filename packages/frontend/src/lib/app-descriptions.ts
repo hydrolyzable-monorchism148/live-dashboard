@@ -414,6 +414,14 @@ export function getAppDescription(appName: string, displayTitle?: string): strin
     }
   }
 
-  // Fallback to generic description
-  return lowerIndex.get(appName.toLowerCase()) ?? DEFAULT_DESCRIPTION;
+  // Known app without template → use generic description
+  const desc = lowerIndex.get(appName.toLowerCase());
+  if (desc) return desc;
+
+  // Unknown app with a display title → show it (games, galgame, etc.)
+  if (displayTitle) {
+    return `正在玩「${displayTitle}」喵~`;
+  }
+
+  return DEFAULT_DESCRIPTION;
 }
