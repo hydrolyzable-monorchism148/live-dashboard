@@ -100,8 +100,30 @@ export function handleHealthDataQuery(url: URL): Response {
     return Response.json({ error: "date parameter required (YYYY-MM-DD)" }, { status: 400 });
   }
 
+  // Accept timezone offset in minutes (e.g. -480 for UTC+8), same as /api/timeline
+  const tzParam = url.searchParams.get("tz");
+  const tzOffsetMinutes = tzParam ? parseInt(tzParam, 10) : 0;
+
   try {
-    // Strict date validation: parse and verify round-trip to catch invalid dates like 2024-02-30
+    if (tzOffsetMinutes && !isNaN(tzOffsetMinutes) && Math.abs(tzOffsetMinutes) <= 840) {
+      // Convert offset to SQLite modifier (e.g. tz=-480 → "+08:00")
+      const offsetHours = -tzOffsetMinutes / 60;
+      const sign = offsetHours >= 0 ? "+" : "-";
+      const absH = Math.floor(Math.abs(offsetHours));
+      const absM = Math.round((Math.abs(offsetHours) - absH) * 60);
+      const modifier = `${sign}${String(absH).padStart(2, "0")}:${String(absM).padStart(2, "0")}`;
+
+      const records = db.prepare(`
+        SELECT type, value, unit, recorded_at, end_time
+        FROM health_records
+        WHERE date(recorded_at, '${modifier}') = ?
+        ORDER BY recorded_at ASC
+      `).all(date) as HealthRecord[];
+
+      return Response.json({ date, records });
+    }
+
+    // No timezone offset — use UTC (backwards compatible)
     const startOfDay = `${date}T00:00:00.000Z`;
     const d = new Date(startOfDay);
     if (isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== date) {

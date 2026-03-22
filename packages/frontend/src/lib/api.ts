@@ -84,7 +84,8 @@ export interface HealthDataResponse {
 }
 
 export async function fetchHealthData(date: string, signal?: AbortSignal): Promise<HealthDataResponse> {
-  const url = `${API_BASE}/api/health-data?date=${encodeURIComponent(date)}`;
+  const tz = new Date().getTimezoneOffset();
+  const url = `${API_BASE}/api/health-data?date=${encodeURIComponent(date)}&tz=${tz}`;
   const res = await fetch(url, { signal });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
